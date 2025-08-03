@@ -10,20 +10,21 @@ services:
     environment:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_DATABASE=${PG_DATABASE}
+      - POSTGRES_DB=${PG_DATABASE}  # Changed from POSTGRES_DATABASE
     volumes:
-      - ./db_data:/var/lib/postgresql/data/
+      - db_data:/var/lib/postgresql/data/  # Use named volume
     healthcheck:
-      test: ["CMD", "pg_isready", "-p", "${PG_PORT}", "-U", "${PG_USER}"]
+      test: ["CMD", "pg_isready", "-p", "5432", "-U", "${PG_USER}"]  # Use internal port
       interval: 5s
       timeout: 5s
       retries: 3
+
   s3:
     restart: always
     image: minio/minio
     container_name: mlflow_minio
     volumes:
-      - ./minio_data:/data
+      - minio_data:/data  # Use named volume
     ports:
       - "${MINIO_PORT}:9000"
       - "${MINIO_CONSOLE_PORT}:9001"
@@ -37,7 +38,7 @@ services:
       - MINIO_PORT=${MINIO_PORT}
       - MINIO_STORAGE_USE_HTTPS=${MINIO_STORAGE_USE_HTTPS}
       - MINIO_CONSOLE_ADDRESS=${MINIO_CONSOLE_ADDRESS}
-    command: server /data
+    command: server /data --console-address ":9001"  # Added console address
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -51,6 +52,7 @@ services:
     container_name: mlflow_server
     depends_on:
       - db
+      - s3  # Added missing dependency
     ports:
       - "${MLFLOW_PORT}:5000"
     networks:
@@ -68,17 +70,18 @@ services:
       --serve-artifacts
       --artifacts-destination s3://${MLFLOW_BUCKET_NAME}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${MLFLOW_PORT}/"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]  # Use internal port
       interval: 30s
       timeout: 10s
       retries: 3
 
-  volumes:
-    db_data:
-    minio_data:
+# These sections must be at root level, not under services
+volumes:
+  db_data:
+  minio_data:
 
-  networks:
-    frontend:
-      driver: bridge
-    backend:
-      driver: bridge
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
