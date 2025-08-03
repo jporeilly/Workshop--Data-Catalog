@@ -1,0 +1,72 @@
+schema_name,table_name,column_count,required_columns,estimated_rows,size_mb,create_date,modify_date,business_purpose,initial_sensitivity_classification,compliance_scope
+dbo,DatabaseLog,24,18,1596,51.13,07:29.2,07:33.1,System/Reference Data,LOW - Reference Data,Standard Corporate Governance
+dbo,AWBuildVersion,4,4,1,0.28,07:29.4,07:32.9,System/Reference Data,LOW - Reference Data,Standard Corporate Governance
+dbo,ErrorLog,18,10,0,0,07:29.2,07:29.3,System/Reference Data,LOW - Reference Data,Standard Corporate Governance
+HumanResources,EmployeePayHistory,5,5,316,0.98,07:29.5,07:38.7,Employee Lifecycle Management,HIGH - Personal Data,"Employment Law, PII Protection"
+HumanResources,EmployeeDepartmentHistory,6,5,296,1.17,07:29.5,07:38.7,Employee Lifecycle Management,HIGH - Personal Data,"Employment Law, PII Protection"
+HumanResources,Employee,16,14,290,2.13,07:29.5,07:39.4,Employee Lifecycle Management,HIGH - Personal Data,"Employment Law, PII Protection"
+HumanResources,Department,4,4,16,0.28,07:29.4,07:38.7,Employee Lifecycle Management,HIGH - Personal Data,"Employment Law, PII Protection"
+HumanResources,JobCandidate,8,4,13,1.56,07:29.5,07:38.7,Employee Lifecycle Management,HIGH - Personal Data,"Employment Law, PII Protection"
+HumanResources,Shift,5,5,3,0.35,07:29.6,07:38.7,Employee Lifecycle Management,HIGH - Personal Data,"Employment Law, PII Protection"
+Person,BusinessEntity,3,3,20777,2.46,07:29.4,07:39.3,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,EmailAddress,5,4,19972,10.35,07:29.4,07:38.7,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,Password,5,5,19972,9.73,07:29.5,07:38.7,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,Person,39,24,19972,397.21,07:29.5,07:39.4,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,PersonPhone,4,4,19972,5.03,07:29.5,07:38.8,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,Address,27,21,19614,26.93,07:29.4,07:39.0,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,BusinessEntityAddress,5,5,19614,4.73,07:29.4,07:38.5,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,BusinessEntityContact,5,5,909,0.98,07:29.4,07:38.6,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,CountryRegion,3,3,238,0.59,07:29.4,07:39.6,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,StateProvince,8,8,181,1.56,07:29.6,07:39.6,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,ContactType,3,3,20,0.21,07:29.4,07:38.6,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,AddressType,4,4,6,0.28,07:29.4,07:38.5,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Person,PhoneNumberType,3,3,3,0.21,07:29.5,07:38.8,Customer and Employee Identity Management,HIGH - Personal Data,"GDPR, CCPA, PII Protection"
+Production,TransactionHistory,9,9,113443,56.32,07:29.6,07:39.3,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,TransactionHistoryArchive,9,9,89253,44.51,07:29.6,07:35.1,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,WorkOrder,10,8,72591,41.95,07:29.6,07:39.4,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,WorkOrderRouting,12,8,67131,66.09,07:29.6,07:39.3,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,BillOfMaterials,9,7,2679,2.88,07:29.4,07:38.5,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductInventory,7,7,1069,1.37,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductDescription,4,4,762,1.03,07:29.5,07:39.5,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductModelProductDescriptionCulture,4,4,762,0.78,07:29.5,07:39.5,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,Product,25,13,504,6.45,07:29.5,07:39.5,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductProductPhoto,4,4,504,0.28,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductCostHistory,5,4,395,0.98,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductListPriceHistory,5,4,395,0.98,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductModel,18,12,128,1.97,07:29.5,07:39.5,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductPhoto,18,6,101,14.72,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,UnitMeasure,3,3,38,0.21,07:29.6,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductSubcategory,5,5,37,0.35,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductDocument,3,3,32,0.21,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ScrapReason,3,3,16,0.21,07:29.6,07:39.3,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,Location,5,5,14,0.35,07:29.5,07:39.3,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,Document,42,33,13,6.34,07:29.4,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,Culture,3,3,8,0.21,07:29.4,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductModelIllustration,3,3,7,0.21,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,Illustration,6,4,5,1.17,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductCategory,4,4,4,0.28,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Production,ProductReview,8,7,4,1.56,07:29.5,07:38.8,Manufacturing and Inventory Management,MEDIUM - Operational Data,Standard Corporate Governance
+Purchasing,PurchaseOrderDetail,11,11,8845,6.27,07:29.5,07:39.4,Vendor Relations and Procurement,MEDIUM - Operational Data,Standard Corporate Governance
+Purchasing,PurchaseOrderHeader,13,12,4012,5.79,07:29.5,07:39.4,Vendor Relations and Procurement,MEDIUM - Operational Data,Standard Corporate Governance
+Purchasing,ProductVendor,11,8,460,2.15,07:29.5,07:38.8,Vendor Relations and Procurement,MEDIUM - Operational Data,Standard Corporate Governance
+Purchasing,Vendor,8,7,104,1.56,07:29.6,07:39.4,Vendor Relations and Procurement,MEDIUM - Operational Data,Standard Corporate Governance
+Purchasing,ShipMethod,6,6,5,0.42,07:29.6,07:39.0,Vendor Relations and Procurement,MEDIUM - Operational Data,Standard Corporate Governance
+Sales,SalesOrderDetail,11,10,121317,107.34,07:29.5,07:39.4,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesOrderHeader,26,17,31465,141.58,07:29.6,07:39.4,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesOrderHeaderSalesReason,3,3,27647,2.27,07:29.6,07:39.2,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,Customer,7,4,19820,7.49,07:29.4,07:39.0,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,CreditCard,6,6,19118,9.42,07:29.4,07:39.0,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,PersonCreditCard,3,3,19118,1.71,07:29.5,07:38.7,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,CurrencyRate,7,7,13532,5.74,07:29.4,07:39.0,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,Store,18,12,701,5.3,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SpecialOfferProduct,4,4,538,0.78,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesPersonQuotaHistory,5,5,163,0.98,07:29.6,07:39.2,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,CountryRegionCurrency,3,3,109,0.21,07:29.4,07:38.6,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,Currency,3,3,105,0.21,07:29.4,07:38.6,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesTaxRate,7,7,29,0.49,07:29.6,07:39.2,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesPerson,9,7,17,0.63,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesTerritoryHistory,6,5,17,0.42,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SpecialOffer,11,10,16,0.77,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesReason,4,4,10,0.28,07:29.6,07:39.2,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,SalesTerritory,10,10,10,0.7,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
+Sales,ShoppingCartItem,6,6,3,0.42,07:29.6,07:39.3,Revenue Operations and Customer Transactions,MEDIUM - Business Sensitive,"Financial Reporting, SOX"
