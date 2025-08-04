@@ -1,87 +1,237 @@
+# MLflow Docker Compose Configuration with Pentaho Data Catalog Integration
+# This setup provides a complete MLflow environment with:
+# - PostgreSQL backend for metadata storage and Model Registry
+# - MinIO S3-compatible storage for artifacts
+# - MLflow tracking server with Model Registry enabled
+# - Pentaho Data Catalog integration support
+
 services:
+  # ===================================================================================
+  # PostgreSQL Database Service
+  # Stores MLflow metadata, experiments, runs, parameters, metrics, and Model Registry
+  # ===================================================================================
   db:
-    restart: always
-    image: postgres
-    container_name: mlflow_db
+    restart: always                              # Always restart container if it stops
+    image: postgres:13                           # PostgreSQL 13 - stable version compatible with MLflow
+    container_name: mlflow_db                    # Fixed container name for easy reference
+    
+    # Network exposure configuration
     expose:
-      - "${PG_PORT}"
+      - "${PG_PORT}"                            # Expose port to other containers in network
+    ports:
+      - "${PG_PORT}:5432"                       # Map external port (from .env) to internal port 5432
+                                                # External: for host/PDC connections, Internal: standard PostgreSQL port
+    
     networks:
-      - backend
+      - backend                                 # Connect to backend network (isolated from external access)
+    
+    # PostgreSQL configuration via environment variables
     environment:
-      - POSTGRES_USER=${PG_USER}
-      - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_DB=${PG_DATABASE}  # Changed from POSTGRES_DATABASE
+      - POSTGRES_USER=${PG_USER}                # Database username (from .env file)
+      - POSTGRES_PASSWORD=${PG_PASSWORD}        # Database password (from .env file) 
+      - POSTGRES_DB=${PG_DATABASE}              # Initial database name to create (from .env file)
+    
+    # Data persistence and initialization
     volumes:
-      - db_data:/var/lib/postgresql/data/  # Use named volume
+      - db_data:/var/lib/postgresql/data/       # Persistent volume for database data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql  # Initialize MLflow registry tables and permissions
+    
+    # Health monitoring - checks if PostgreSQL is ready to accept connections
     healthcheck:
-      test: ["CMD", "pg_isready", "-p", "5432", "-U", "${PG_USER}"]  # Use internal port
-      interval: 5s
-      timeout: 5s
-      retries: 3
+      test: ["CMD", "pg_isready", "-p", "5432", "-U", "${PG_USER}"]  # Uses internal port 5432
+      interval: 5s                              # Check every 5 seconds
+      timeout: 5s                               # Wait max 5 seconds for response
+      retries: 3                                # Retry 3 times before marking unhealthy
 
+  # ===================================================================================
+  # MinIO S3-Compatible Object Storage Service
+  # Stores MLflow artifacts (models, plots, files, datasets)
+  # ===================================================================================
   s3:
-    restart: always
-    image: minio/minio
-    container_name: mlflow_minio
+    restart: always                              # Always restart container if it stops
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z  # Specific MinIO version with full admin UI
+    container_name: mlflow_minio                 # Fixed container name for easy reference
+    
+    # Data persistence
     volumes:
-      - minio_data:/data  # Use named volume
+      - minio_data:/data                        # Persistent volume for object storage data
+    
+    # Network exposure configuration
     ports:
-      - "${MINIO_PORT}:9000"
-      - "${MINIO_CONSOLE_PORT}:9001"
+      - "${MINIO_PORT}:9000"                    # MinIO API port (S3-compatible interface)
+      - "${MINIO_CONSOLE_PORT}:9001"            # MinIO web console port (admin UI)
+    
     networks:
-      - frontend
-      - backend
+      - frontend                                # Connect to frontend (for web console access)
+      - backend                                 # Connect to backend (for MLflow server access)
+    
+    # MinIO configuration via environment variables
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_ADDRESS=${MINIO_ADDRESS}
-      - MINIO_PORT=${MINIO_PORT}
-      - MINIO_STORAGE_USE_HTTPS=${MINIO_STORAGE_USE_HTTPS}
-      - MINIO_CONSOLE_ADDRESS=${MINIO_CONSOLE_ADDRESS}
-    command: server /data --console-address ":9001"  # Added console address
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}      # MinIO admin username (from .env file)
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}  # MinIO admin password (from .env file)
+      - MINIO_ADDRESS=${MINIO_ADDRESS}          # Internal MinIO server address
+      - MINIO_PORT=${MINIO_PORT}                # MinIO API port
+      - MINIO_STORAGE_USE_HTTPS=${MINIO_STORAGE_USE_HTTPS}  # Enable/disable HTTPS
+      - MINIO_CONSOLE_ADDRESS=${MINIO_CONSOLE_ADDRESS}      # Console web interface address
+    
+    # MinIO server startup command with console configuration
+    command: server /data --console-address ":9001"  # Start MinIO server with web console on port 9001
+    
+    # Health monitoring - checks if MinIO API is responding
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]  # Internal health endpoint
+      interval: 30s                             # Check every 30 seconds
+      timeout: 20s                              # Wait max 20 seconds for response
+      retries: 3                                # Retry 3 times before marking unhealthy
 
-  tracking_server:
-    restart: always
-    build: ./mlflow
-    image: mlflow_server
-    container_name: mlflow_server
+  # ===================================================================================
+  # MinIO Bucket Initialization Service
+  # One-time service that creates the MLflow bucket and sets permissions
+  # ===================================================================================
+  createbuckets:
+    image: minio/mc                             # MinIO client for bucket management
     depends_on:
-      - db
-      - s3  # Added missing dependency
-    ports:
-      - "${MLFLOW_PORT}:5000"
+      - s3                                      # Wait for MinIO service to start
     networks:
-      - frontend
-      - backend
+      - backend                                 # Connect to backend network to access MinIO
+    
+    # Initialization script that runs once and exits
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://s3:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      /usr/bin/mc mb myminio/${MLFLOW_BUCKET_NAME};
+      /usr/bin/mc policy set public myminio/${MLFLOW_BUCKET_NAME};
+      exit 0;
+      "
+    # Script breakdown:
+    # 1. Create alias 'myminio' pointing to MinIO server with credentials
+    # 2. Create bucket with name from MLFLOW_BUCKET_NAME environment variable
+    # 3. Set bucket policy to public (allows MLflow to access artifacts)
+    # 4. Exit successfully (container will show as 'Exited 0')
+
+  # ===================================================================================
+  # MLflow Tracking Server
+  # Main MLflow service with Model Registry, artifact serving, and web UI
+  # Configured for Pentaho Data Catalog integration
+  # ===================================================================================
+  tracking_server:
+    restart: always                              # Always restart container if it stops
+    build: ./mlflow                             # Build custom image from ./mlflow directory (includes Pentaho integration)
+    image: mlflow_server                        # Tag for the built image
+    container_name: mlflow_server               # Fixed container name for easy reference
+    
+    # Service dependencies with health checks
+    depends_on:
+      db:
+        condition: service_healthy              # Wait for PostgreSQL to be healthy
+      s3:
+        condition: service_healthy              # Wait for MinIO to be healthy  
+      createbuckets:
+        condition: service_completed_successfully  # Wait for bucket creation to complete
+    
+    # Network exposure
+    ports:
+      - "${MLFLOW_PORT}:5000"                   # Map external port (from .env) to internal MLflow port 5000
+    
+    networks:
+      - frontend                                # Connect to frontend (for web UI access)
+      - backend                                 # Connect to backend (for database and MinIO access)
+    
+    # Environment variables for MLflow server configuration
     environment:
-      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY}
-      - MLFLOW_S3_ENDPOINT_URL=http://s3:${MINIO_PORT}
-      - MLFLOW_S3_IGNORE_TLS=true
+      # Database connection variables (passed to entrypoint script)
+      - PG_USER=${PG_USER}                      # PostgreSQL username
+      - PG_PASSWORD=${PG_PASSWORD}              # PostgreSQL password
+      - PG_DATABASE=${PG_DATABASE}              # PostgreSQL database name
+      - PG_PORT=${PG_PORT}                      # PostgreSQL external port (for reference)
+      
+      # MinIO/S3 configuration for artifact storage
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}   # MinIO access key (S3-compatible)
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY}  # MinIO secret key (S3-compatible)
+      - MLFLOW_S3_ENDPOINT_URL=http://s3:${MINIO_PORT}    # Internal MinIO endpoint URL
+      - MLFLOW_S3_IGNORE_TLS=true               # Disable TLS for internal MinIO communication
+      
+      # MLflow-specific configuration
+      - MLFLOW_REGISTRY_URI=${MLFLOW_REGISTRY_URI}         # Model Registry database connection
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=${MLFLOW_DEFAULT_ARTIFACT_ROOT}  # Default artifact storage location
+      
+      # Pentaho Data Catalog integration configuration (optional - for logging/monitoring)
+      # PDC connects TO MLflow, not the other way around
+      - PENTAHO_DATA_CATALOG_URL=${PENTAHO_DATA_CATALOG_URL}           # PDC server URL
+      - PENTAHO_DATA_CATALOG_USERNAME=${PENTAHO_DATA_CATALOG_USERNAME} # PDC username
+      - PENTAHO_DATA_CATALOG_PASSWORD=${PENTAHO_DATA_CATALOG_PASSWORD} # PDC password
+    
+    # MLflow server startup command with full configuration
     command: >
       mlflow server
-      --backend-store-uri postgresql://${PG_USER}:${PG_PASSWORD}@db:${PG_PORT}/${PG_DATABASE}
+      --backend-store-uri postgresql://${PG_USER}:${PG_PASSWORD}@db:5432/${PG_DATABASE}
+      --registry-store-uri postgresql://${PG_USER}:${PG_PASSWORD}@db:5432/${PG_DATABASE}
+      --default-artifact-root s3://${MLFLOW_BUCKET_NAME}
       --host 0.0.0.0
+      --port 5000
       --serve-artifacts
       --artifacts-destination s3://${MLFLOW_BUCKET_NAME}
+    # Command breakdown:
+    # --backend-store-uri: PostgreSQL connection for experiment metadata (uses internal port 5432)
+    # --registry-store-uri: PostgreSQL connection for Model Registry (same as backend for simplicity)
+    # --default-artifact-root: Default S3 bucket for storing artifacts
+    # --host 0.0.0.0: Bind to all interfaces (allows external connections)
+    # --port 5000: Internal MLflow server port
+    # --serve-artifacts: Enable artifact serving through MLflow server
+    # --artifacts-destination: S3 bucket for artifact uploads
+    
+    # Health monitoring - checks if MLflow web server is responding
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/"]  # Use internal port
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]  # Internal health endpoint
+      interval: 30s                             # Check every 30 seconds
+      timeout: 10s                              # Wait max 10 seconds for response
+      retries: 3                                # Retry 3 times before marking unhealthy
 
-# These sections must be at root level, not under services
+# ===================================================================================
+# Persistent Data Volumes
+# These volumes persist data across container restarts and recreations
+# ===================================================================================
 volumes:
-  db_data:
-  minio_data:
+  db_data:                                      # PostgreSQL data persistence
+    # Stores database files, ensures data survives container recreation
+  minio_data:                                   # MinIO object storage persistence  
+    # Stores artifact files, ensures artifacts survive container recreation
 
+# ===================================================================================
+# Docker Networks
+# Separate networks for security and traffic management
+# ===================================================================================
 networks:
-  frontend:
-    driver: bridge
-  backend:
-    driver: bridge
+  frontend:                                     # External-facing network
+    driver: bridge                              # Standard Docker bridge network
+    # Used for: Web UI access, MinIO console access
+    
+  backend:                                      # Internal network for service communication
+    driver: bridge                              # Standard Docker bridge network  
+    # Used for: Database connections, MinIO API access, internal service communication
+    # More secure as it's isolated from external access
+
+# ===================================================================================
+# Architecture Summary:
+# 
+# External Access:
+# - MLflow UI: http://host:5000
+# - MinIO Console: http://host:9001  
+# - PostgreSQL: host:5435 (for external tools like Pentaho Data Catalog)
+#
+# Internal Communication (Docker network):
+# - MLflow ↔ PostgreSQL: db:5432
+# - MLflow ↔ MinIO: s3:9000
+# - Bucket creation ↔ MinIO: s3:9000
+#
+# Data Flow:
+# 1. MLflow stores metadata (experiments, runs, params, metrics) in PostgreSQL
+# 2. MLflow stores artifacts (models, files, plots) in MinIO S3 buckets
+# 3. Model Registry metadata stored in same PostgreSQL database
+# 4. Pentaho Data Catalog connects externally to discover and catalog ML assets
+#
+# Pentaho Data Catalog Integration:
+# - PDC connects to MLflow via REST API (http://host:5000)
+# - PDC can access PostgreSQL directly for enhanced metadata queries (host:5435)
+# - Model Registry enables PDC to discover and catalog ML models, versions, experiments
+# ===================================================================================
