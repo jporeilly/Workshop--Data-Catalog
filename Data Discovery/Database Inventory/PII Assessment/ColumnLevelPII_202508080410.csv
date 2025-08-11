@@ -1,0 +1,66 @@
+"report_section","full_column_name","data_type","nullable","pii_category","pii_risk_level","data_sensitivity","recommended_action"
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Password.PasswordHash,varchar(128),NO,AUTHENTICATION,HIGH_PII_RISK,HIGHLY_SENSITIVE,ENCRYPT - Apply strong encryption and restrict access
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Password.PasswordSalt,varchar(10),NO,AUTHENTICATION,HIGH_PII_RISK,HIGHLY_SENSITIVE,ENCRYPT - Apply strong encryption and restrict access
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.CreditCard.CreditCardID,int,NO,FINANCIAL,HIGH_PII_RISK,HIGHLY_SENSITIVE,ENCRYPT - Apply strong encryption and restrict access
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.PersonCreditCard.CreditCardID,int,NO,FINANCIAL,HIGH_PII_RISK,HIGHLY_SENSITIVE,ENCRYPT - Apply strong encryption and restrict access
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.SalesOrderHeader.CreditCardApprovalCode,varchar(15),YES,FINANCIAL,HIGH_PII_RISK,HIGHLY_SENSITIVE,ENCRYPT - Apply strong encryption and restrict access
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.SalesOrderHeader.CreditCardID,int,YES,FINANCIAL,HIGH_PII_RISK,HIGHLY_SENSITIVE,ENCRYPT - Apply strong encryption and restrict access
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.SalesTaxRate.SalesTaxRateID,int,NO,FINANCIAL,HIGH_PII_RISK,HIGHLY_SENSITIVE,STANDARD - Apply standard data governance controls
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.BirthDate,date,NO,DEMOGRAPHIC,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Address.AddressID,int,NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Address.AddressLine1,nvarchar(120),NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Address.AddressLine2,nvarchar(120),YES,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.AddressType.AddressTypeID,int,NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.BusinessEntityAddress.AddressID,int,NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.BusinessEntityAddress.AddressTypeID,int,NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.EmailAddress.EmailAddress,nvarchar(100),YES,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.EmailAddress.EmailAddressID,int,NO,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.EmailPromotion,int,NO,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.FirstName,Name,NO,PERSONAL_NAME,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.LastName,Name,NO,PERSONAL_NAME,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.PersonPhone.PhoneNumber,Phone,NO,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.PersonPhone.PhoneNumberTypeID,int,NO,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.PhoneNumberType.PhoneNumberTypeID,int,NO,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Production.ProductReview.EmailAddress,nvarchar(100),NO,CONTACT_INFO,MEDIUM_PII_RISK,SENSITIVE,MASK - Consider data masking for non-production
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.SalesOrderHeader.BillToAddressID,int,NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.SalesOrderHeader.ShipToAddressID,int,NO,ADDRESS_INFO,MEDIUM_PII_RISK,SENSITIVE,RESTRICT - Limit access to authorized personnel only
+DETAILED PII INVENTORY FOR DATA CATALOG,dbo.ErrorLog.ErrorMessage,nvarchar(8000),NO,DEMOGRAPHIC,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.Gender,nchar(2),NO,DEMOGRAPHIC,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.JobTitle,nvarchar(100),NO,PERSONAL_NAME,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.Suffix,nvarchar(20),YES,PERSONAL_NAME,LOW_PII_RISK,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.Title,nvarchar(16),YES,PERSONAL_NAME,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,Production.Document.Title,nvarchar(100),NO,PERSONAL_NAME,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,Purchasing.ProductVendor.AverageLeadTime,int,NO,DEMOGRAPHIC,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,Sales.CurrencyRate.AverageRate,money,NO,DEMOGRAPHIC,LOW_PII_RISK,MODERATELY_SENSITIVE,MONITOR - Track access and usage patterns
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Department.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.HireDate,date,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.LoginID,nvarchar(512),NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.MaritalStatus,nchar(2),NO,DEMOGRAPHIC,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Employee.NationalIDNumber,nvarchar(30),NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.EmployeeDepartmentHistory.EndDate,date,YES,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.EmployeeDepartmentHistory.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.EmployeeDepartmentHistory.StartDate,date,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.EmployeePayHistory.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.EmployeePayHistory.RateChangeDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.JobCandidate.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,HumanResources.Shift.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Address.City,nvarchar(60),NO,ADDRESS_INFO,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Address.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Address.PostalCode,nvarchar(30),NO,ADDRESS_INFO,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.AddressType.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.BusinessEntity.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.BusinessEntityAddress.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.BusinessEntityContact.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.ContactType.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.CountryRegion.CountryRegionCode,nvarchar(6),NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.CountryRegion.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.EmailAddress.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Password.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.Person.PersonType,nchar(4),NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.PersonPhone.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.PhoneNumberType.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.StateProvince.CountryRegionCode,nvarchar(6),NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.StateProvince.ModifiedDate,datetime,NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification
+DETAILED PII INVENTORY FOR DATA CATALOG,Person.StateProvince.StateProvinceCode,nchar(6),NO,,POTENTIAL_PII,NOT_SENSITIVE,REVIEW - Manual review recommended for PII classification

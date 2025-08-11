@@ -1,0 +1,7 @@
+"report_section","schema_name","total_columns","pii_columns","high_risk_columns","medium_risk_columns","pii_percentage"
+PII RISK BY SCHEMA,Sales,137,8,5,2,5.8
+PII RISK BY SCHEMA,Person,70,37,2,14,52.9
+PII RISK BY SCHEMA,Production,169,2,0,1,1.2
+PII RISK BY SCHEMA,HumanResources,40,16,0,1,40.0
+PII RISK BY SCHEMA,dbo,21,1,0,0,4.8
+PII RISK BY SCHEMA,Purchasing,49,1,0,0,2.0
