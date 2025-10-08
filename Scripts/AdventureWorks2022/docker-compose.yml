@@ -1,0 +1,89 @@
+## Docker Compose to deploy AdventureWorks 2022.
+## https://github.com/microsoft/mssql-docker/tree/master/linux/preview/examples/mssql-customize
+## https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=tsql#tabpanel_1_tsql
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    ports:
+      - "0.0.0.0:1433:1433"
+    environment:
+      SA_PASSWORD: "StrongPassword123"
+      ACCEPT_EULA: "Y"
+      PATH: /opt/mssql-tools18/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    hostname: adventureworks-sql
+    volumes:
+      - mssql-db:/var/opt/mssql
+      - backup:/backup
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U", "sa", "-P", "StrongPassword123", "-C", "-Q", "SET NOCOUNT ON; Select SUM(state) from sys.databases" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - mssql-network
+
+  backup-downloader:
+    image: alpine
+    environment:
+      - SOURCE_URL=https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2022.bak
+      - DESTINATION_PATH=/backup/AdventureWorks2022.bak
+      - DATABASE_NAME=AdventureWorks2022
+      # https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=tsql#tabpanel_1_tsql
+      - SQL="
+        USE [master];
+        IF NOT EXISTS (SELECT name FROM master.sys.databases WHERE name = N'$${DATABASE_NAME}')
+        BEGIN
+          RESTORE DATABASE [$${DATABASE_NAME}]
+          FROM DISK = N'$${DESTINATION_PATH}'
+          WITH
+              MOVE N'$${DATABASE_NAME}' TO '/var/opt/mssql/data/$${DATABASE_NAME}_Data.mdf',
+              MOVE N'$${DATABASE_NAME}_log' TO '/var/opt/mssql/data/$${DATABASE_NAME}_log.ldf',
+              FILE = 1,
+              NOUNLOAD,
+              STATS = 5;
+          PRINT 'Database $${DATABASE_NAME} has been restored.';
+        END
+        ELSE
+        BEGIN
+            PRINT 'Database $${DATABASE_NAME} already exists. No restore needed.';
+        END"
+    command: "sh -c '
+      set -e;
+      if [ -f \"$${DESTINATION_PATH}\" ]; then echo \"DB already downloaded\" && exit 0; fi;
+      eval \"SQL=\"$$SQL\"\";
+      echo \"SQL: $${SQL}\";
+      echo \"$${SQL}\" > /backup/restore.sql;
+      echo \"Download $${SOURCE_URL} to $${DESTINATION_PATH} \";
+      wget \"$${SOURCE_URL}\" -O tmp-download;
+      mv tmp-download \"$${DESTINATION_PATH}\";
+      '"
+    volumes:
+      - backup:/backup
+    networks:
+      - mssql-network
+
+  backup-applier:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    entrypoint: /opt/mssql-tools18/bin/sqlcmd
+    # Fixed: Changed "sql1" to "mssql" to match the service name
+    command: ["-S", "mssql,1433", "-C", "-U", "sa", "-P", "StrongPassword123", "-i", "/backup/restore.sql"]
+    depends_on:
+      backup-downloader:
+        condition: service_completed_successfully
+      mssql:
+        condition: service_healthy
+    volumes:
+      - backup:/backup
+    networks:
+      - mssql-network
+
+networks:
+  mssql-network:
+    driver: bridge
+
+volumes:
+  mssql-db:
+  backup:

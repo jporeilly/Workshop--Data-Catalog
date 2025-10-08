@@ -1,0 +1,25 @@
+# Mailhog Email server for Adventure Works
+
+services:
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    volumes:
+      - mailhog-data:/maildir
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /maildir
+    networks:
+      - pdc_default  # Join Keycloak's network
+    restart: unless-stopped
+
+volumes:
+  mailhog-data:
+    driver: local
+
+networks:
+  pdc_default:
+    external: true  # This network already exists (created by your PDC stack)
